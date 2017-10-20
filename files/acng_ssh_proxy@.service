@@ -1,0 +1,10 @@
+[Unit]
+Description=SSH Proxy Tunnel for acng to Host %i
+Requires=network.target
+After=network.target
+
+[Service]
+ExecStart=/etc/acng-ssh-proxy/%i
+RestartSec=1s
+Restart=always
+User=nagios

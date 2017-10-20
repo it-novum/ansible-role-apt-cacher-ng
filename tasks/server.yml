@@ -1,0 +1,20 @@
+- name: Installation
+  apt:
+    name: apt-cacher-ng
+
+- name: Create ssh proxy configuration directory
+  file:
+    path: /etc/acng-ssh-proxy
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Copy systemd ssh proxy service
+  copy:
+    src: acng_ssh_proxy@.service
+    dest: /etc/systemd/systemd/acng_ssh_proxy@.service
+
+- name: reload systemd
+  systemd:
+    daemon_reload: yes
