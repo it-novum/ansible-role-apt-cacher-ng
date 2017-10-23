@@ -1,16 +1,29 @@
+- name: create acng tunnel user
+  user:
+    name: acng
+    home: /var/lib/acng
+    shell: /bin/bash
+  register: acng_user_data
+
+- name: Store ssh public key from master
+  authorized_key:
+    user: acng
+    key: "{{ lookup('file', role_path + '/files/' + acng_server + '.pubkey') }}"
+
 - name: Create ssh command configuration
   template:
     src: ssh_proxy_command.j2
     dest: "/etc/acng-ssh-proxy/{{ ansible_hostname }}"
     owner: root
-    group: nagios
-    mode: "0654"
+    group: root
+    mode: "0755"
   delegate_to: "{{ acng_server }}"
+  register: acng_cmd
 
 - name: Enable and start service
   systemd:
     daemon-reload: yes
     name: "acng_ssh_proxy@{{ ansible_hostname }}"
     enabled: yes
-    state: started
+    state: "{% if acng_cmd.changed %}restarted{% else %}started{% endif %}"
   delegate_to: "{{ acng_server }}"

@@ -1,10 +1,15 @@
 - include_tasks: server.yml
-  when: "{{acng_server }} == {{ inventory_hostname }}"
+  when: "acng_server == inventory_hostname"
 
 - include_tasks: client.yml
-  when: "{{acng_server }} != {{ inventory_hostname }}"
+  when: "acng_server != inventory_hostname"
 
 - name: Wait for acng port
   wait_for:
     port: 3142
     timeout: 60
+
+- name: Create sources.list
+  template:
+    src: sources.list.j2
+    dest: /etc/apt/sources.list

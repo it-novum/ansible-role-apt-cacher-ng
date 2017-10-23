@@ -1,0 +1,19 @@
+{% if ansible_distribution == "Ubuntu" %}
+deb http://127.0.0.1:3142/archive.ubuntu.com/ubuntu {{ ansible_distribution_release }} {{ acng_apt_components_ubuntu }}
+deb http://127.0.0.1:3142/archive.ubuntu.com/ubuntu {{ ansible_distribution_release }}-updates {{ acng_apt_components_ubuntu }}
+deb http://127.0.0.1:3142/archive.ubuntu.com/ubuntu {{ ansible_distribution_release }}-security {{ acng_apt_components_ubuntu }}
+{% if acng_apt_source %}
+deb-src http://127.0.0.1:3142/archive.ubuntu.com/ubuntu {{ ansible_distribution_release }} {{ acng_apt_components_ubuntu }}
+deb-src http://127.0.0.1:3142/archive.ubuntu.com/ubuntu {{ ansible_distribution_release }}-updates {{ acng_apt_components_ubuntu }}
+deb-src http://127.0.0.1:3142/archive.ubuntu.com/ubuntu {{ ansible_distribution_release }}-security {{ acng_apt_components_ubuntu }}
+{% endif %}
+{% elif ansible_distribution == "Debian" %}
+deb http://127.0.0.1:3142/ftp.debian.org/debian {{ ansible_distribution_release }} {{ acng_apt_components_debian }}
+deb http://127.0.0.1:3142/ftp.debian.org/debian {{ ansible_distribution_release }}-updates {{ acng_apt_components_debian }}
+deb http://127.0.0.1:3142/security.debian.org {{ ansible_distribution_release }}/updates {{ acng_apt_components_debian }}
+{% if acng_apt_source %}
+deb-src http://127.0.0.1:3142/ftp.debian.org/debian {{ ansible_distribution_release }} {{ acng_apt_components_debian }}
+deb-src http://127.0.0.1:3142/ftp.debian.org/debian {{ ansible_distribution_release }}-updates {{ acng_apt_components_debian }}
+deb-src http://127.0.0.1:3142/security.debian.org {{ ansible_distribution_release }}/updates {{ acng_apt_components_debian }}
+{% endif %}
+{% endif %}

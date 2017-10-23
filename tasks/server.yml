@@ -2,6 +2,35 @@
   apt:
     name: apt-cacher-ng
 
+- name: Configure acng proxy
+  lineinfile:
+    line: "Proxy: {{ acng_proxy }}"
+    path: /etc/apt-cacher-ng/acng.conf
+    regexp: "^\\s*Proxy:.*$"
+  when: acng_proxy != ""
+  register: acng_conf
+
+- name: restart acng
+  service:
+    name: apt-cacher-ng
+    state: restarted
+  when: acng_conf.changed
+
+- name: create acng tunnel user
+  user:
+    name: acng
+    generate_ssh_key: yes
+    ssh_key_bits: 4096
+    home: /var/lib/acng
+    shell: /bin/false
+  register: acng_user_data
+
+- name: Store ssh pubkey
+  local_action:
+    module: copy
+    content: "{{ acng_user_data.ssh_public_key }}"
+    dest: "{{ role_path }}/files/{{ acng_server }}.pubkey"
+
 - name: Create ssh proxy configuration directory
   file:
     path: /etc/acng-ssh-proxy
@@ -13,7 +42,7 @@
 - name: Copy systemd ssh proxy service
   copy:
     src: acng_ssh_proxy@.service
-    dest: /etc/systemd/systemd/acng_ssh_proxy@.service
+    dest: /etc/systemd/system/acng_ssh_proxy@.service
 
 - name: reload systemd
   systemd:

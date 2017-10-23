@@ -1,3 +1,1 @@
-#!/bin/bash
-
-exec /usr/bin/ssh -l "{{ acng_ssh_user }}" -R 3142:127.0.0.1:3142 "{{ ansible_address }}"
+exec /usr/bin/ssh -l acng -R 3142:127.0.0.1:3142 -N -o StrictHostKeyChecking=no "{{ ansible_host }}"

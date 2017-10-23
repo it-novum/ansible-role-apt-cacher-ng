@@ -1,0 +1,4 @@
+acng_apt_components_ubuntu: "main restricted universe multiverse"
+acng_apt_components_debian: "main contrib non-free"
+acng_apt_source: no
+acng_proxy: ""
