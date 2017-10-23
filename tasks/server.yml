@@ -8,13 +8,28 @@
     path: /etc/apt-cacher-ng/acng.conf
     regexp: "^\\s*Proxy:.*$"
   when: acng_proxy != ""
-  register: acng_conf
+  register: acng_conf_proxy
+
+- name: Configure acng backends
+  copy:
+    content: "{{ item.url }}"
+    dest: "/etc/apt-cacher-ng/backends_{{ item.name }}"
+  with_items: "{{ acng_backends }}"
+  register: acng_backend
+
+- name: Add backend to acng.conf
+  lineinfile:
+    line: "Remap-{{ item.name }}: {{ item.base }} ; file:backends_{{ item.name }}"
+    path: /etc/apt-cacher-ng/acng.conf
+    regexp: "^\\s*Remap-{{ item.name }}:.*"
+  with_items: "{{ acng_backends }}"
+  register: acng_conf_backend
 
 - name: restart acng
   service:
     name: apt-cacher-ng
     state: restarted
-  when: acng_conf.changed
+  when: acng_conf_proxy.changed or acng_conf_backend.changed or acng_backend.changed
 
 - name: create acng tunnel user
   user:
