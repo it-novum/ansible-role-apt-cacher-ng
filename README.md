@@ -32,6 +32,6 @@ You can configure some special repos with this, for example openitcockpit:
 
 Then
 ```
-deb http://127.0.0.1/packages.openitcockpit.com/repositories/xenial xenial main
+deb http://127.0.0.1:3142/packages.openitcockpit.com/repositories/xenial xenial main
 ```
 in sources.list will work.
