@@ -20,10 +20,17 @@
   delegate_to: "{{ acng_server }}"
   register: acng_cmd
 
+- name: Wait for acng port
+  wait_for:
+    port: 3142
+    timeout: 60
+  ignore_errors: yes
+  register: acng_port_wait
+
 - name: Enable and start service
   systemd:
     daemon-reload: yes
     name: "acng_ssh_proxy@{{ ansible_hostname }}"
     enabled: yes
-    state: "{% if acng_cmd.changed %}restarted{% else %}started{% endif %}"
+    state: "{% if acng_cmd.changed or acng_port_wait.failed %}restarted{% else %}started{% endif %}"
   delegate_to: "{{ acng_server }}"
